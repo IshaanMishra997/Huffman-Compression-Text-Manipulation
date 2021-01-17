@@ -6,22 +6,30 @@ Grade 12 CS Project
 import pickle
 import csv
 import time
+
 #Function Definition
 #>>File Handling
 f=''
+
+
 def getfile():
     global f
     f=input('please enter the name of the text file as <name>.txt\nensure the file is in the same folder as the code\n')
     return f
+   
+   
 def read(file):
     f=open(file, 'r')
     content=f.read()
     f.close()
     return content
+    
+    
 def writefile(filename, s):
     ft = open(filename,'w')
     ft.write(s)
     ft.close()
+
 
 def log(filename, action):
     result=time.localtime()
@@ -74,6 +82,8 @@ def build_tree(letter_f):
         tree.append(letter_f)
         build_tree(letter_f)
     return tree
+
+
 
 def get_binary(tree, letters):
     binary_code=[]
@@ -142,6 +152,7 @@ def make_compressed_file(file,c_content,b_key):
     fl.close()
     print('compressed files created')
 
+
 def shorthand():
         s=read(getfile())
         print('''
@@ -191,7 +202,9 @@ def shorthand():
         print('number of characters in altered file: ', len(s))
         writefile(f,s)
         log(f,'shorthand')
-                    
+            
+        
+        
 def shortform():
     D={'zero':'0', 'one':'1', 'two':'2', 'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7', 'eight': '8', 'nine': '9'}
     s=read(getfile())
@@ -211,6 +224,7 @@ def shortform():
     print('number of characters in altered file: ', len(s))   
     writefile(f,s)
     log(f,'shortform')
+
 
 def analytics():
     #word count, character count, no. of sentences, 10 most common words
@@ -266,26 +280,21 @@ def replacer():
     D={}
     Dr={}
     s=read(getfile())
-            
+    s=s.split()    
     n=int(input('How many unique words do you want to replace?'))
     for i in range(n):
-        key=input('Enter original word')
+        key=input('Enter unique word')
         val=input('Enter replacement: ')
         rep=input('''Replace (a/b)
     a) First occurence
-    b) All occurences''') 
-        D[key]=val
-        Dr[key]=rep
-    #print('number of characters in original file: ' , len(s))
-    s=s.split()
-    for i in range(len(s)):
-        if s[i] in D.keys():
-            if Dr[i]=='a':
-                Dr[i]=='done'
-                s[i]=D[s[i]]
-            elif Dr[i]=='b':
-                s[i]=D[s[i]]
-            
+    b) All occurences''')
+        for j in range(len(s)):
+            if s[j]==key:
+                s[j]=val
+                if rep=='a':
+                    break
+                
+
     s=' '.join(s)
     writefile(f,s)
     log(f,'replacer')
@@ -412,8 +421,35 @@ def punctuator():
     log(f,'punctuator')
 
 
+def history():
+    tval2=True
+    while tval2:
+        s=input(print('''Choose Action (a, b, c) -
+    a) View History
+    b) Delete History (note: this will be logged)
+    c) Back to Main Menu'''))
+        if s=='a':
+            with open('logs.csv', 'r') as logs:
+                reader=csv.reader(logs)
+                for row in reader:
+                    if row[0]=='date':
+                        print(row[0]+ '\t', row[1]+ '\t', row[2] , row[3], sep='\t')
+                    else:
+                        print('\t'.join(row))
+        if s=='b':
+            with open('logs.csv','w') as logs:
+                writer=csv.writer(logs)
+                writer.writerow(['date', 'time', 'filename', 'action'])
+            log('logs.csv', 'history deleted')
+        if s=='c':
+            tval2=False
+        else:
+            print('Please enter valid input (a, b, c)')
+
+
 #menu
 tval = True
+
 while tval:
     n=int(input('''What do you want to do? (1, 2, 3. . .)
 1) File Compression
@@ -445,35 +481,16 @@ while tval:
     elif n==7:
         punctuator()
     elif n==8:
-        tval2=True
-        while tval2:
-            s=input(print('''Choose Action (a, b, c) -
-    a) View History
-    b) Delete History (note: this will be logged)
-    c) Back to Main Menu'''))
-            if s=='a':
-                with open('logs.csv', 'r') as logs:
-                    reader=csv.reader(logs)
-                    for row in reader:
-                        if row[0]=='date':
-                            print(row[0]+ '\t', row[1]+ '\t', row[2] , row[3], sep='\t')
-                        else:
-                            print('\t'.join(row))
-            if s=='b':
-                with open('logs.csv','w') as logs:
-                    writer=csv.writer(logs)
-                    writer.writerow(['date', 'time', 'filename', 'action'])
-                log('logs.csv', 'history deleted')
-            if s=='c':
-                tval2=False
-            else:
-                print('Please enter valid input (a, b, c)')
+        history()
     elif n==9:
         print('exiting. . .')
         break
     else:
         print('Please input valid value (1, 2, 3. . .)')
-        
+    
+    
+    
+    
 '''  
 #run test
 file=getfile()
